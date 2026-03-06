@@ -1,7 +1,13 @@
 package vn.hoidanit.laptopshop.domain;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+@Entity
 public class User {
-    private Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private long id;
     private String email;
     private String password;
     private String fullName;
@@ -12,7 +18,7 @@ public class User {
     public User() {
     }
     
-    public User(Long id, String email, String password, String fullName, String address, String phone) {
+    public User(long id, String email, String password, String fullName, String address, String phone) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -21,10 +27,10 @@ public class User {
         this.phone = phone;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
     public String getEmail() {
