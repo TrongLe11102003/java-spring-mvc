@@ -33,7 +33,9 @@ public class UserControler {
 
     @RequestMapping("/admin/user")
     public String getUserPage(Model model) {
-        model.addAttribute("newUser", new User());
+        User user = new User();
+        user.setEmail("trong@gmail.com");
+        model.addAttribute("newUser", user);
         return "admin/user/create";
     }
     
