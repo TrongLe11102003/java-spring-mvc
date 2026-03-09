@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,20 +45,39 @@ public class UserControler {
         return "admin/user/table-user";
     }
 
-     @RequestMapping("/admin/user/{id}")
+    @RequestMapping("/admin/user/{id}")
     public String getUserDetailPage(Model model, @PathVariable long id) {
-        System.out.println("check path id = " + id);
+        User user = this.userService.getUserById(id);
+        model.addAttribute("user", user);
         model.addAttribute("id", id);
         return "/admin/user/show";
     }
+    @RequestMapping("/admin/user/update/{id}")
+    public String getUpdateUserPage(Model model, @PathVariable long id) {
+        User currUser = this.userService.getUserById(id);
+        model.addAttribute("newUser", currUser);
+        return "/admin/user/update";
+    }
+    @PostMapping("/admin/user/update")
+    public String postUpdateUser(Model model, @ModelAttribute("newUser") User hoidanit) {
+        User currUser = this.userService.getUserById(hoidanit.getId());
+        if (currUser != null) {
+            currUser.setAddress(hoidanit.getAddress());
+            currUser.setFullName(hoidanit.getFullName());
+            currUser.setPhone(hoidanit.getPhone());
+            this.userService.handleSaveUser(currUser);
+        }
+        model.addAttribute("newUser", currUser);
 
+        return "redirect:/admin/user";
+    }
+    
     @RequestMapping("/admin/user/create")
     public String createUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "/admin/user/create";
     }  
 
-    
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
     public String createUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
         System.out.println("run here" + hoidanit);

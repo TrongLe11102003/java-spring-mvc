@@ -2,6 +2,7 @@ package vn.hoidanit.laptopshop.service;
 
 import java.util.List;
 
+import org.eclipse.tags.shaded.org.apache.regexp.recompile;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.laptopshop.domain.User;
@@ -25,5 +26,8 @@ public class UserService {
     }
     public List<User> getAllUsersByEmail(String email) {
         return this.userRepository.findAllByEmail(email);
+    }
+    public User getUserById(long id) {
+        return this.userRepository.findById(id);
     }
 }
