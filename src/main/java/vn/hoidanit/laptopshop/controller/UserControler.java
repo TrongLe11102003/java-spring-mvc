@@ -84,22 +84,20 @@ public class UserControler {
         this.userService.handleSaveUser(hoidanit);
         return "redirect:/admin/user";
     }  
-    
+
+    @GetMapping("/admin/user/delete/{id}")
+    public String getDeleteUserPage(Model model, @PathVariable long id) {
+        // User user = new User();
+        // user.setId(id);
+        model.addAttribute("id", id);
+        model.addAttribute("newUser", new User());
+        return "/admin/user/delete";
+    }
+    @PostMapping("/admin/user/delete")
+    public String postDeleteUser(Model model, @ModelAttribute("newUser") User eric) {
+        this.userService.deleteAUser(eric.getId());
+        return "redirect:/admin/user";
+    }  
     
 }
 
-// @RestController
-// public class UserControler {
-
-//     //DI : dependency injection
-//     private UserService userService;
-
-//     public UserControler(UserService userService) {
-//         this.userService = userService;
-//     }
-
-//     @GetMapping("")
-//     public String getHomePage() {
-//         return this.userService.handleHello();
-//     }
-// }
