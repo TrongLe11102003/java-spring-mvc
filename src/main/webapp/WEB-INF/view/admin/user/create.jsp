@@ -15,6 +15,19 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
     <meta name="author" content="Hỏi Dân IT" />
     <title>Create - Hỏi Dân IT</title>
     <link href="/css/styles.css" rel="stylesheet" />
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(() => {
+                        const avatarFile = $("#avatarFile");
+                        avatarFile.change(function (e) {
+                            const imgURL = URL.createObjectURL(e.target.files[0]);
+                            $("#avatarPreview").attr("src", imgURL);
+                            $("#avatarPreview").css({ "display": "block" });
+                        });
+                    });
+                </script>
+
     <script
       src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
       crossorigin="anonymous"
@@ -44,8 +57,10 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                     method="post"
                     action="/admin/user/create"
                     modelAttribute="newUser"
+                    class="row"
+                    enctype="multipart/form-data"
                   >
-                    <div class="mb-3">
+                    <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Email:</label>
                       <form:input
                         type="email"
@@ -54,7 +69,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                       />
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Password:</label>
                       <form:input
                         type="password"
@@ -62,7 +77,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                         path="password"
                       />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Phone Number:</label>
                       <form:input
                         type="text"
@@ -70,7 +85,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                         path="phone"
                       />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Full Name:</label>
                       <form:input
                         type="text"
@@ -78,13 +93,29 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                         path="fullName"
                       />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 col-12">
                       <label class="form-label">Address:</label>
                       <form:input
                         type="text"
                         class="form-control"
                         path="address"
                       />
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                      <label class="form-label">Role:</label>
+                      <form:select class="form-select" path="role.name">
+                        <form:option value="ADMIN">ADMIN</form:option>
+                        <form:option value="USER">USER</form:option>
+                      </form:select>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                      <label for="avatarFile" class="form-label">Avatar:</label>
+                      <input class="form-control" type="file" id="avatarFile" accept=".png, .jpg, jpeg"
+                      name="hoidanitFile"
+/> 
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                      <img style="max-height: 250px; display: none;" alt="avatar preview" id="avatarPreview"> 
                     </div>
                     <button type="submit" class="btn btn-primary">
                       Create
