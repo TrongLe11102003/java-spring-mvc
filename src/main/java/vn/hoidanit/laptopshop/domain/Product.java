@@ -1,5 +1,6 @@
 package vn.hoidanit.laptopshop.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,13 +20,15 @@ public class Product {
     @NotNull
     @NotEmpty(message = "Tên sản phẩm không được để trống")
     private String name;
-    @NotNull
+    
+    @NotNull(message = "Lỗi rồi")
     @DecimalMin(value = "0", inclusive = false, message = "Price phải lớn hơn 0")
     private double price;
 
     private String image;
     @NotNull
     @NotEmpty(message = "detailDesc không được để trống")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String detailDesc;
     @NotNull
     @NotEmpty(message = "shortDesc không được để trống")

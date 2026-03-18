@@ -15,7 +15,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
     <meta name="author" content="Hỏi Dân IT" />
     <title>Create - Hỏi Dân IT</title>
     <link href="/css/styles.css" rel="stylesheet" />
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
                 <script>
                     $(document).ready(() => {
@@ -122,7 +122,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                       <label for="avatarFile" class="form-label">Avatar:</label>
-                      <input class="form-control" type="file" id="avatarFile" accept=".png, .jpg, jpeg"
+                      <input class="form-control" type="file" id="avatarFile" accept=".png, .jpg, .jpeg"
                       name="hoidanitFile"
 /> 
                     </div>
