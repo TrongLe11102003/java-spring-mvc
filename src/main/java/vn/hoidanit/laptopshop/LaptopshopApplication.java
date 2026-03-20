@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 
 // @SpringBootApplication
 @SpringBootApplication(
-	exclude = org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)
+exclude = org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)
 public class LaptopshopApplication {
 
 	public static void main(String[] args) {

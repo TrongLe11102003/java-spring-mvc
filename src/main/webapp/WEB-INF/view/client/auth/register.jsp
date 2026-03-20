@@ -33,24 +33,33 @@ uri="http://www.springframework.org/tags/form" %>
                     </h3>
                   </div>
                   <div class="card-body">
-                    <form:form method="post" action="/register">
+                    <form:form method="post" action="/register" modelAttribute="registerUser">
+                    <c:set var="errorFirstName">
+                        <form:errors path="firstName" cssClass="invalid-feedback"/>
+                    </c:set>
+                    <c:set var="errorPassword">
+                        <form:errors path="confirmPassword" cssClass="invalid-feedback"/>
+                    </c:set>
+                    <c:set var="errorEmail">
+                        <form:errors path="email" cssClass="invalid-feedback"/>
+                    </c:set>
                       <div class="row mb-3">
                         <div class="col-md-6">
                           <div class="form-floating mb-3 mb-md-0">
-                            <input
-                              class="form-control"
-                              id="inputFirstName"
+                            <form:input
+                              class="form-control ${not empty errorFirstName ? 'is-invalid' : ''}"
+                              path="firstName"
                               type="text"
                               placeholder="Enter your first name"
                             />
-                            <label for="inputFirstName">First name</label>
+                            <label>First name</label>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-floating">
-                            <input
+                            <form:input
                               class="form-control"
-                              id="inputLastName"
+                              path="lastName"
                               type="text"
                               placeholder="Enter your last name"
                             />
@@ -59,52 +68,50 @@ uri="http://www.springframework.org/tags/form" %>
                         </div>
                       </div>
                       <div class="form-floating mb-3">
-                        <input
-                          class="form-control"
-                          id="inputEmail"
+                        <form:input
+                          class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
                           type="email"
                           placeholder="name@example.com"
+                          path="email"
                         />
-                        <label for="inputEmail">Email address</label>
+                        <label>Email address</label>
+                        ${errorEmail}
                       </div>
-                      F<div class="row mb-3">
+                      <div class="row mb-3">
                         <div class="col-md-6">
                           <div class="form-floating mb-3 mb-md-0">
-                            <input
-                              class="form-control"
-                              id="inputPassword"
+                            <form:input
+                              class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
                               type="password"
                               placeholder="Create a password"
+                              path="password"
                             />
-                            <label for="inputPassword">Password</label>
+                            <label>Password</label>
+                            ${errorPassword}
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-floating mb-3 mb-md-0">
-                            <input
+                            <form:input
                               class="form-control"
-                              id="inputPasswordConfirm"
+                              path="confirmPassword"
                               type="password"
                               placeholder="Confirm password"
                             />
-                            <label for="inputPasswordConfirm"
-                              >Confirm Password</label
-                            >
+                            <label for="inputPasswordConfirm">Confirm Password</label>
                           </div>
                         </div>
                       </div>
                       <div class="mt-4 mb-0">
                         <div class="d-grid">
-                          <a class="btn btn-primary btn-block" href="login.html"
-                            >Create Account</a
-                          >
+                          <button type="submit" class="btn btn-primary" >Create Account</button>
                         </div>
                       </div>
                     </form:form>
                   </div>
                   <div class="card-footer text-center py-3">
                     <div class="small">
-                      <a href="login.html">Have an account? Go to login</a>
+                      <a href="/login">Have an account? Go to login</a>
                     </div>
                   </div>
                 </div>
@@ -114,7 +121,7 @@ uri="http://www.springframework.org/tags/form" %>
         </main>
       </div>
       <div id="layoutAuthentication_footer">
-        <footer class="py-4 bg-light mt-auto">
+        <!-- <footer class="py-4 bg-light mt-auto">
           <div class="container-fluid px-4">
             <div
               class="d-flex align-items-center justify-content-between small"
@@ -125,7 +132,7 @@ uri="http://www.springframework.org/tags/form" %>
               </div>
             </div>
           </div>
-        </footer>
+        </footer> -->
       </div>
     </div>
     <script
