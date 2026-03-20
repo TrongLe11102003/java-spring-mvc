@@ -56,13 +56,13 @@ public class UserControler {
         User user = this.userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("id", id);
-        return "/admin/user/detail";
+        return "admin/user/detail";
     }
     @RequestMapping("/admin/user/update/{id}")
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         User currUser = this.userService.getUserById(id);
         model.addAttribute("newUser", currUser);
-        return "/admin/user/update";
+        return "admin/user/update";
     }
     @PostMapping("/admin/user/update")
     public String postUpdateUser(Model model, @ModelAttribute("newUser") User hoidanit) {
@@ -81,7 +81,7 @@ public class UserControler {
     @GetMapping("/admin/user/create")
     public String createUserPage(Model model) {
         model.addAttribute("newUser", new User());
-        return "/admin/user/create";
+        return "admin/user/create";
     }  
 
     @PostMapping(value = "/admin/user/create")
@@ -89,7 +89,7 @@ public class UserControler {
                                     @RequestParam("hoidanitFile") MultipartFile file) {
         //Validate
         if (newUserBindingResult.hasErrors()) {
-            return "/admin/user/create";
+            return "admin/user/create";
         }
         //
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
@@ -108,7 +108,7 @@ public class UserControler {
         // user.setId(id);
         model.addAttribute("id", id);
         model.addAttribute("newUser", new User());
-        return "/admin/user/delete";
+        return "admin/user/delete";
     }
     @PostMapping("/admin/user/delete")
     public String postDeleteUser(Model model, @ModelAttribute("newUser") User eric) {
