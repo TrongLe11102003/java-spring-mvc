@@ -17,6 +17,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    
     private double totalPrice;
 
     @ManyToOne
