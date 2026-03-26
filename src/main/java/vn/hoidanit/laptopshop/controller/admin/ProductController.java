@@ -46,7 +46,7 @@ public class ProductController {
     @PostMapping("/admin/product/create")
     public String handleCreateProduct(@ModelAttribute("newProduct") @Valid Product pr,BindingResult newProductBindingResult, @RequestParam("hoidanitFile") MultipartFile file) {
         if (newProductBindingResult.hasErrors()) {
-            return "/admin/product/create";
+            return "admin/product/create";
         }    
         String image = this.uploadService.handleSaveUploadFile(file, "product");
         pr.setImage(image);
@@ -59,7 +59,7 @@ public class ProductController {
         Product pr = this.productService.fetchProductById(id).get();
         model.addAttribute("product", pr);
         model.addAttribute("id", id);
-        return "/admin/product/detail";
+        return "admin/product/detail";
     }
 
     @GetMapping("/admin/product/delete/{id}")
@@ -67,7 +67,7 @@ public class ProductController {
 
         model.addAttribute("id", id);
         model.addAttribute("newProduct", new Product());
-        return "/admin/product/delete";
+        return "admin/product/delete";
     }
     @PostMapping("/admin/product/delete")
     public String postDeleteProduct(Model model, @ModelAttribute("newProduct") Product eric) {
@@ -78,7 +78,7 @@ public class ProductController {
     public String getUpdateProductPage(Model model, @PathVariable long id) {
         Optional<Product> currProduct = this.productService.fetchProductById(id);
         model.addAttribute("newProduct", currProduct.get());
-        return "/admin/product/update";
+        return "admin/product/update";
     }
     @PostMapping("/admin/product/update")
     public String postUpdateUser(Model model, @ModelAttribute("newProduct") @Valid Product pr,

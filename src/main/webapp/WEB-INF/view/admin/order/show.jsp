@@ -1,5 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib
+uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,8 +37,39 @@ uri="http://java.sun.com/jsp/jstl/core"%>
               <li class="breadcrumb-item"><a href="/admin">DashBoard</a></li>
               <li class="breadcrumb-item active">Orders</li>
             </ol>
-            <div>table order</div>
-          </div>
+            <div class="container mt-5">
+              <div class="row">
+                <div class="col-12 mx-auto">
+                  <hr />
+                  <table class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Total Price</th>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <c:forEach var="order" items="${orders}">
+                        <tr>
+                          <td>${order.id}</td>
+                          <td>${order.totalPrice}</td>
+                          <td>${order.user.getFullName()}</td>
+                          <td>${order.status}</td>
+                          <td>
+                            <a href="/admin/order/${order.id}" class="btn btn-success">View</a>
+                            <a href="/admin/order/update/${order.id}" class="btn btn-warning mx-2">Update</a>
+                            <a href="/admin/order/delete/${order.id}" class="btn btn-danger">Delete</a>
+                          </td>
+                        </tr>
+                      </c:forEach>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>          </div>
         </main>
         <jsp:include page="../layout/footer.jsp" />
       </div>

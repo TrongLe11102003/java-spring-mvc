@@ -1,5 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
+uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@taglib
+uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib
 uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
@@ -71,7 +74,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               </tr>
             </thead>
             <tbody>
-              <c:forEach var="cartDetail" items="${cartDetails}">
+              <c:forEach var="cartDetail" items="${cartDetails}" varStatus="status">
                 <tr>
                   <th scope="row">
                     <div class="d-flex align-items-center">
@@ -110,6 +113,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                         value="${cartDetail.quantity}"
                         data-cart-detail-id="${cartDetail.id}"
                         data-cart-detail-price="${cartDetail.price}"
+                        data-cart-detail-index="${status.index}"
                       />
                       <div class="input-group-btn">
                         <button
@@ -159,20 +163,38 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   </div>
                 </div>
               </div>
-              <div
-                class="py-4 mb-4 border-top border-bottom d-flex justify-content-between"
-              >
+              <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                 <h5 class="mb-0 ps-4 me-4">Tổng số tiền</h5>
                 <p class="mb-0 pe-4" data-cart-total-price="${totalPrice}">
                         <fmt:formatNumber type="number" value="${totalPrice}" /> đ
                 </p>
               </div>
-              <button
+              <form:form action="/confirm-checkout" method="post" modelAttribute="cart">
+                <input type="hidden" name="${_csrf.parameterName}"
+                      value="${_csrf.token}" />
+                <div style="display: block;">
+                  <c:forEach var="cartDetail" items="${cart.cartDetails}" varStatus="status">
+                    <div class="mb-3">
+                      <div class="form-group">
+                      <label>Id:</label>
+                      <form:input class="form-control" type="text" value="${cartDetail.id}" path="cartDetails[${status.index}].id" />
+                      </div>
+                      <div class="form-group">
+                      <label>Quantity:</label>
+                      <form:input class="form-control" type="text" value="${cartDetail.quantity}" path="cartDetails[${status.index}].quantity" />
+                      </div>
+                    </div>
+
+                  </c:forEach>
+
+                </div>
+
+              </form:form>
+              <a href="/checkout"
                 class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
-                type="button"
-              >
+                type="button" >
                 Thanh toán
-              </button>
+              </a>
             </div>
           </div>
         </div>
