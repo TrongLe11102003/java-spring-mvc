@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import vn.hoidanit.laptopshop.domain.Order;
 import vn.hoidanit.laptopshop.domain.OrderDetail;
+import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.repository.OrderDetailRepository;
 import vn.hoidanit.laptopshop.repository.OrderRepository;
 
@@ -49,6 +50,10 @@ public class OrderService {
             currenOrder.setStatus(order.getStatus());
             this.orderRepository.save(currenOrder);
         }
+    }
+
+    public List<Order> fetchOrderByUser(User currentUser) {
+        return this.orderRepository.findByUser(currentUser);
     }
     
 }
