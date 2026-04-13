@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.hoidanit.laptopshop.domain.Order;
-import vn.hoidanit.laptopshop.domain.Product;
 import vn.hoidanit.laptopshop.service.OrderService;
 @Controller
 public class OrderController {

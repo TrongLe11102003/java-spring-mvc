@@ -24,12 +24,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String email = oAuth2User.getAttribute("email");
         String fullName = oAuth2User.getAttribute("name");
-
+        String picture = oAuth2User.getAttribute("picture");
         User user = this.userService.getUserByEmail(email);
         if (user == null) {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setFullName(fullName);
+            newUser.setAvatar(picture);
             newUser.setPassword(this.passwordEncoder.encode("123456"));
             newUser.setRole(this.userService.getRoleByName("USER"));
             this.userService.handleSaveUser(newUser);

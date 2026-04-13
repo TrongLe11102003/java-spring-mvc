@@ -56,13 +56,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   style="min-width: 300px"
                 >
                   <img
-                    style="
-                      width: 150px;
+                      style="width: 150px;
                       height: 150px;
                       border-radius: 50%;
-                      overflow: hidden;
-                    "
-                    src="/images/avatar/${sessionScope.avatar}"
+                      object-fit: cover;"
+                      src="${sessionScope.avatar}"
+                      referrerpolicy="no-referrer"
                   />
                   <div class="text-center my-3">
                     <c:out value="${sessionScope.fullName}" />
