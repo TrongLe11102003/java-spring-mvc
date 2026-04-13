@@ -1,12 +1,15 @@
 package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,13 +17,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-
 @Controller
 public class UserControler {
     private final UserService userService;
@@ -35,18 +39,39 @@ public class UserControler {
     }
 
     @RequestMapping("/")
-    public String getHomePage(Model model) {
-        List<User> arrUsers = this.userService.getAllUsers();
-        System.out.println(arrUsers);
+    public String getHomePage(Model model, HttpServletRequest request) {
+        // List<User> arrUsers = this.userService.getAllUsers();
+        // System.out.println(arrUsers);
+        HttpSession session = request.getSession(false);
+        
+
         model.addAttribute("eric", "test");
         model.addAttribute("hoidanit", "from controller with model");
         return "hello";
     }
 
     @RequestMapping("/admin/user")
-    public String getUserPage(Model model) {
-        List<User> users = this.userService.getAllUsers();
+    public String getUserPage(Model model, 
+                                @RequestParam("page") Optional<String> pageOptional) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                //convert from String to int
+                page = Integer.parseInt(pageOptional.get());
+            } else {
+                //page = 1
+            }
+        } catch(Exception e) {
+            //page = 1
+            //TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page - 1, 2);
+        Page<User> usersPage = this.userService.getAllUsers(pageable);
+        List<User> users = usersPage.getContent();        
         model.addAttribute("users1", users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", usersPage.getTotalPages());
+
         System.out.println(">>> check users:" + users);
         return "admin/user/show";
     }
