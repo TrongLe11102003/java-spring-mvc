@@ -62,6 +62,13 @@ uri="http://www.springframework.org/tags/form" %>
                           <button class="btn btn-primary btn-block">Login</button>
                         </div>
                       </div>
+                      <div class="mt-3">
+                        <div class="d-grid">
+                          <a href="/oauth2/authorization/google" class="btn btn-danger btn-block">
+                          <i class="fab fa-google me-2"></i> Login with Google
+                          </a>
+                        </div>
+                      </div>
                     </form>
                   </div>
                   <div class="card-footer text-center py-3">

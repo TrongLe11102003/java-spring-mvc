@@ -16,8 +16,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import vn.hoidanit.laptopshop.domain.User;
+import vn.hoidanit.laptopshop.service.UserService;
 
 public class CustomSuccessHandler implements AuthenticationSuccessHandler{
+    private UserService userService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     protected String determineTargetUrl(final Authentication authentication) {
 
@@ -33,7 +39,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
             }
         }
 
-        throw new IllegalStateException();
+        return "/";
     }
     protected void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -48,6 +54,17 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
+        
+        String email = authentication.getName();
+        User user = this.userService.getUserByEmail(email);
+        if (user != null) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.setAttribute("fullName", user.getFullName());
+                session.setAttribute("avatar", user.getAvatar());
+                session.setAttribute("email", user.getEmail());
+            }
+        }
         String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
