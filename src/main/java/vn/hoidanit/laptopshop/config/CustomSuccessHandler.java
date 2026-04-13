@@ -38,7 +38,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
             }
         }
 
-        throw new IllegalStateException();
+        return "/";
     }
     protected void clearAuthenticationAttributes(HttpServletRequest request, Authentication authentication) {
         HttpSession session = request.getSession(false);
@@ -46,9 +46,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
             return;
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-        //get Email
         String email = authentication.getName();
-        //query user
         User user = this.userService.getUserByEmail(email);
         if (user != null) {
             session.setAttribute("fullName", user.getFullName());
@@ -67,6 +65,17 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
+        
+        String email = authentication.getName();
+        User user = this.userService.getUserByEmail(email);
+        if (user != null) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.setAttribute("fullName", user.getFullName());
+                session.setAttribute("avatar", user.getAvatar());
+                session.setAttribute("email", user.getEmail());
+            }
+        }
         String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {

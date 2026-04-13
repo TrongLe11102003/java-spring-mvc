@@ -14,12 +14,20 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import jakarta.servlet.DispatcherType;
+import vn.hoidanit.laptopshop.service.CustomOAuth2UserService;
 import vn.hoidanit.laptopshop.service.CustomUserDetailsService;
 import vn.hoidanit.laptopshop.service.UserService;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserService userService;
+
+    public SecurityConfiguration(CustomOAuth2UserService customOAuth2UserService, UserService userService) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.userService = userService;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,7 +53,9 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationSuccessHandler customSuccessHandler(){
-        return new CustomSuccessHandler();
+        CustomSuccessHandler handler = new CustomSuccessHandler();
+        handler.setUserService(userService);
+        return handler;
     }
 
     @Bean
@@ -83,8 +93,12 @@ public class SecurityConfiguration {
                         .failureUrl("/login?error")
                         .successHandler(customSuccessHandler())
                         .permitAll())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"))
-                ;
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .successHandler(customSuccessHandler())
+                        .userInfoEndpoint(user -> user
+                            .userService(customOAuth2UserService))
+                );
 
         return http.build();
     }
