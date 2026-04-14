@@ -190,11 +190,11 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                 </div>
 
               </form:form>
-              <a href="/checkout"
+              <button type="submit"
                 class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                 type="button" >
                 Thanh toán
-              </a>
+              </button>
             </div>
           </div>
         </div>

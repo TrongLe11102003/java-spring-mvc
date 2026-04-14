@@ -138,7 +138,7 @@ public class ProductService {
                 order.setStatus("PENDING");
                 double sum = 0;
                 for (CartDetail cd : cartDetails) {
-                    sum += cd.getPrice();
+                    sum += cd.getPrice() * cd.getQuantity();
                 }
                 order.setTotalPrice(sum);
                 order = this.orderRepository.save(order);
@@ -156,7 +156,7 @@ public class ProductService {
                 for (CartDetail cd : cartDetails) {
                     this.cartDetailRepository.deleteById(cd.getId());
                 }
-                this.cartDetailRepository.deleteById(cart.getId());
+                this.cartRepository.deleteById(cart.getId());
                 // step 3: update session
                 session.setAttribute("sum", 0);
             }
