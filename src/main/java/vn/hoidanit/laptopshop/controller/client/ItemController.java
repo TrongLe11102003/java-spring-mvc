@@ -1,8 +1,10 @@
 package vn.hoidanit.laptopshop.controller.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,41 +100,75 @@ public class ItemController {
         return "redirect:/cart";
     }
     @PostMapping("/confirm-checkout")
-    public String getCheckOutPage(@ModelAttribute("cart") Cart cart) {
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
-        this.productService.handleUpdateCartBeforeCheckout(cartDetails); 
-        return "redirect:/checkout";
+    public String getCheckOutPage(@ModelAttribute("cart") Cart cart,
+                                    @RequestParam("cartDetailIds") long[] cartDetailIds,
+                                    @RequestParam("idArray") long[] idArray,
+                                    @RequestParam("quantityArray") long[] quantityArray) {
+        // List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        this.productService.handleUpdateCartBeforeCheckout(idArray, quantityArray);
+
+        if (cartDetailIds == null || cartDetailIds.length == 0) {
+            return "redirect:/cart";
+        }
+
+        String ids = Arrays.stream(cartDetailIds)
+                       .mapToObj(String::valueOf)
+                       .collect(Collectors.joining(","));
+        return "redirect:/checkout?selectedIds=" + ids;
     }
     @PostMapping("/place-order")
     public String handlePlaceOrder(HttpServletRequest request,
-                                    @RequestParam("receiverName") String receiverName,
-                                    @RequestParam("receiverAddress") String receiverAddress,
-                                    @RequestParam("receiverPhone") String receiverPhone) {
-        User currentUser = new User();
+                                @RequestParam("receiverName") String receiverName,
+                                @RequestParam("receiverAddress") String receiverAddress,
+                                @RequestParam("receiverPhone") String receiverPhone,
+                                @RequestParam("selectedCartDetailIds") long[] selectedIds) {
+    
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
+    
+        User currentUser = new User();
         currentUser.setId(id);  
-        this.productService.handlePlaceOrder(currentUser, session, receiverName, receiverAddress, receiverPhone);
+
+        List<Long> idList = Arrays.stream(selectedIds).boxed().collect(Collectors.toList());
+
+        this.productService.handlePlaceOrder(currentUser, session, receiverName, receiverAddress, receiverPhone, idList);
+    
         return "redirect:/thankyou";
     }
     @GetMapping("/checkout")
-    public String getCheckOutPage(Model model, HttpServletRequest request) {
-        User currentUser = new User();
+    public String getCheckOutPage(Model model, HttpServletRequest request,
+                             @RequestParam("selectedIds") String selectedIdsStr) {
         HttpSession session = request.getSession(false);
-        long id = (long) session.getAttribute("id");
-        currentUser.setId(id);
+        long userId = (long) session.getAttribute("id");
+        User currentUser = new User();
+        currentUser.setId(userId);
+
+        List<Long> selectedIds = Arrays.stream(selectedIdsStr.split(","))
+                                   .map(String::trim)
+                                   .map(Long::parseLong)
+                                   .collect(Collectors.toList());
+        if (selectedIds.isEmpty()) {
+            return "redirect:/cart";
+        }
 
         Cart cart = this.productService.fetchByUser(currentUser);
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        List<CartDetail> allDetails = (cart == null) ? new ArrayList<>() : cart.getCartDetails();
+    
+        List<CartDetail> selectedDetails = allDetails.stream()
+            .filter(cd -> selectedIds.contains(cd.getId()))
+            .collect(Collectors.toList());
+
         double totalPrice = 0;
-        for (CartDetail cd : cartDetails) {
+        for (CartDetail cd : selectedDetails) {
             totalPrice += cd.getPrice() * cd.getQuantity();
         }
-        model.addAttribute("cartDetails", cartDetails);
+
+        model.addAttribute("cartDetails", selectedDetails);
         model.addAttribute("totalPrice", totalPrice);
 
         return "client/cart/checkout";
     }
+
     @GetMapping("/thankyou")
     public String getThankYouPage(Model model) {
         return "client/cart/thankyou";

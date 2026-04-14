@@ -1,5 +1,6 @@
 package vn.hoidanit.laptopshop.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,13 +63,9 @@ public class ProductService {
 
                 cart = this.cartRepository.save(otherCart);
             }
-            //Save cart_detail
-            //Tìm product by id
-
             Optional<Product> productOptional = this.productRepository.findById(productId);
             if (productOptional.isPresent()) {
                 Product  realProduct = productOptional.get();
-                //Check sản phẩm đã thêm vào giỏ hàng chưa
                 CartDetail oldDetail = this.cartDetailRepository.findByCartAndProduct(cart, realProduct);
                 if (oldDetail == null) {
                     CartDetail cartDetail =  new CartDetail(); 
@@ -112,54 +109,66 @@ public class ProductService {
             }
         }
     }
-    public void handleUpdateCartBeforeCheckout(List<CartDetail> cartDetails) {
-        for (CartDetail cartDetail : cartDetails) {
-            Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(cartDetail.getId());
+    public void handleUpdateCartBeforeCheckout(long[] ids, long[] quantities) {
+        for (int i = 0; i < ids.length; i++) {
+            Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(ids[i]);
             if (cdOptional.isPresent()) {
                 CartDetail currentCartDetail = cdOptional.get();
-                currentCartDetail.setQuantity(cartDetail.getQuantity());
+                currentCartDetail.setQuantity(quantities[i]);
                 this.cartDetailRepository.save(currentCartDetail);
             }
         }
-    }
+    }   
     public void handlePlaceOrder(User user, HttpSession session,
-                                String receiverName, String receiverAddress, String receiverPhone) {
-        // step 1: get cart by user
+                            String receiverName, String receiverAddress, String receiverPhone,
+                            List<Long> selectedIds) { 
         Cart cart = this.cartRepository.findByUser(user);
-        if (cart != null) {
-            List<CartDetail> cartDetails = cart.getCartDetails();
-            if (cartDetails != null) {
-                 //create order
-                Order order = new Order();
-                order.setUser(user);
-                order.setReceiverName(receiverName);
-                order.setReceiverAddress(receiverAddress);
-                order.setReceiverPhone(receiverPhone);
-                order.setStatus("PENDING");
-                double sum = 0;
-                for (CartDetail cd : cartDetails) {
-                    sum += cd.getPrice() * cd.getQuantity();
-                }
-                order.setTotalPrice(sum);
-                order = this.orderRepository.save(order);
-                //create orderDetail
+        if (cart == null || cart.getCartDetails() == null) return;
 
-                for (CartDetail cd : cartDetails) {
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setOrder(order);
-                    orderDetail.setProduct(cd.getProduct());
-                    orderDetail.setPrice(cd.getPrice());
-                    orderDetail.setQuantity(cd.getQuantity());
-                    this.orderDetailRepository.save(orderDetail);
-                }
-                //step 2: delete cart_detail and cart
-                for (CartDetail cd : cartDetails) {
-                    this.cartDetailRepository.deleteById(cd.getId());
-                }
-                this.cartRepository.deleteById(cart.getId());
-                // step 3: update session
-                session.setAttribute("sum", 0);
-            }
+        Order order = new Order();
+        order.setUser(user);
+        order.setReceiverName(receiverName);
+        order.setReceiverAddress(receiverAddress);
+        order.setReceiverPhone(receiverPhone);
+        order.setStatus("PENDING");
+        order.setTotalPrice(0);
+        order = this.orderRepository.save(order);
+
+        double total = 0;
+        List<CartDetail> allDetails = cart.getCartDetails();
+        List<CartDetail> detailsToRemove = new ArrayList<>();
+
+        for (CartDetail cd : allDetails) {
+            if (selectedIds.contains(cd.getId())) {
+                OrderDetail obj = new OrderDetail();
+                obj.setOrder(order);
+               obj.setProduct(cd.getProduct());
+                obj.setPrice(cd.getPrice());
+               obj.setQuantity(cd.getQuantity());
+               this.orderDetailRepository.save(obj);
+
+               total += cd.getPrice() * cd.getQuantity();
+            
+              detailsToRemove.add(cd);
+           }
+        }
+
+        order.setTotalPrice(total);
+        this.orderRepository.save(order);
+
+        for (CartDetail cd : detailsToRemove) {
+            allDetails.remove(cd);
+            this.cartDetailRepository.delete(cd);
+        }
+
+        int newSum = allDetails.size();
+        if (newSum == 0) {
+            this.cartRepository.delete(cart);
+            session.setAttribute("sum", 0);
+        } else {
+            cart.setSum(newSum);
+            this.cartRepository.save(cart);
+            session.setAttribute("sum", newSum);
         }
     }
 }
