@@ -31,7 +31,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             newUser.setEmail(email);
             newUser.setFullName(fullName);
             newUser.setAvatar(picture);
-            newUser.setPassword(this.passwordEncoder.encode("123456"));
+            String randomPassword = java.util.UUID.randomUUID().toString();
+            newUser.setPassword(this.passwordEncoder.encode(randomPassword));
             newUser.setRole(this.userService.getRoleByName("USER"));
             this.userService.handleSaveUser(newUser);
         }
