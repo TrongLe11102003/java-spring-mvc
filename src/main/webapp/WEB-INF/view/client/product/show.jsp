@@ -185,13 +185,13 @@
                                                 </div>
 
                                             </div>
-                                            <div class="col-12">
+                                            <!-- <div class="col-12">
                                                 <button
                                                     class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4"
                                                     id="btnFilter">
                                                     Lọc Sản Phẩm
                                                 </button>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-8 text-center">

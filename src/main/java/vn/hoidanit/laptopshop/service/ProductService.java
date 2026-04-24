@@ -72,18 +72,18 @@ public class ProductService {
     public Specification<Product> buildPriceSpecification(List<String> price) {
         Specification<Product> combinedSpec = Specification.where(null);
         for (String p : price) {
-            double min = 0;
+            double min = 1;
             double max = 0;
             switch (p) {
                 case "duoi-10-trieu":
-                    min = 0;
+                    min = 1;
                     max = 10000000;
                     break;
-                case "10-toi-15-trieu":
+                case "10-15-trieu":
                     min = 10000000;
                     max = 15000000;
                     break;
-                case "15-toi-20-trieu":
+                case "15-20-trieu":
                     min = 15000000;
                     max = 20000000;
                     break;
