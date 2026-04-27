@@ -22,6 +22,8 @@ import vn.hoidanit.laptopshop.domain.Product_;
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.domain.dto.ProductCriteriaDTO;
 import vn.hoidanit.laptopshop.service.ProductService;
+import vn.hoidanit.laptopshop.service.UserService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,9 +32,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ItemController {
     private final ProductService productService;
+    private final UserService userService;
     
-    public ItemController(ProductService productService) {
+    public ItemController(ProductService productService, UserService userService) {
         this.productService = productService;
+        this.userService = userService;
     }
     @GetMapping("/products")
     public String getProduct(Model model, ProductCriteriaDTO productCriteriaDTO, HttpServletRequest request) {
@@ -157,8 +161,7 @@ public class ItemController {
                              @RequestParam("selectedIds") String selectedIdsStr) {
         HttpSession session = request.getSession(false);
         long userId = (long) session.getAttribute("id");
-        User currentUser = new User();
-        currentUser.setId(userId);
+        User currentUser = this.userService.getUserById(userId);
 
         List<Long> selectedIds = Arrays.stream(selectedIdsStr.split(","))
                                    .map(String::trim)
@@ -179,7 +182,7 @@ public class ItemController {
         for (CartDetail cd : selectedDetails) {
             totalPrice += cd.getPrice() * cd.getQuantity();
         }
-
+        model.addAttribute("user", currentUser);
         model.addAttribute("cartDetails", selectedDetails);
         model.addAttribute("totalPrice", totalPrice);
 

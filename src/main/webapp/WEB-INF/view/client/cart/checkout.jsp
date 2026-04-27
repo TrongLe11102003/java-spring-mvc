@@ -59,15 +59,15 @@
 
                         <div class="mb-3">
                             <label class="form-label">Tên người nhận</label>
-                            <input type="text" class="form-control" name="receiverName" required />
+                            <input type="text" class="form-control" name="receiverName" value="${user.fullName}" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ cụ thể</label>
-                            <input type="text" class="form-control" name="receiverAddress" required />
+                            <input type="text" class="form-control" name="receiverAddress" value="${user.address}" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="text" class="form-control" name="receiverPhone" required />
+                            <input type="text" class="form-control" name="receiverPhone" value="${user.phone}" required />
                         </div>
 
                         <div class="bg-light p-4 rounded">

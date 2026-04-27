@@ -105,6 +105,6 @@ public class HomePageController {
         User currentUser = this.userService.getUserByEmail(email);
     
         model.addAttribute("user", currentUser);
-        return "client/profile/show"; // File JSP nằm trong folder client
+        return "client/profile/show";
     }
 }

@@ -58,6 +58,9 @@ uri="http://www.springframework.org/tags/form" %>
                         />
                         <label for="inputPassword">Password</label>
                       </div>
+                      <div class="d-flex align-items-center justify-content-between mt-2 mb-4">
+                        <a class="small" href="/forgot-password">Forgot Password?</a>
+                      </div>
                       <div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                       </div>
