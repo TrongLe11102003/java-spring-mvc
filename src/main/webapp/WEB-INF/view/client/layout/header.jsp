@@ -68,7 +68,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </div>
                 </li>
 
-                <li><a class="dropdown-item" href="#">Quản lý tài khoản</a></li>
+                <li><a class="dropdown-item" href="/profile">Quản lý tài khoản</a></li>
+                <li><a class="dropdown-item" href="/change-password">Đổi mật khẩu</a></li>
 
                 <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>
                 <li>

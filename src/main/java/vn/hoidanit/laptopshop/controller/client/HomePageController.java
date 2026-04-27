@@ -19,6 +19,7 @@ import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.domain.dto.RegisterDTO;
 import vn.hoidanit.laptopshop.service.OrderService;
 import vn.hoidanit.laptopshop.service.ProductService;
+import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,5 +94,17 @@ public class HomePageController {
         model.addAttribute("orders", orders);
         return "client/cart/order-history";
     }
+    @GetMapping("/profile")
+    public String getProfilePage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("email") == null) {
+            return "redirect:/login";
+        }
     
+        String email = (String) session.getAttribute("email");
+        User currentUser = this.userService.getUserByEmail(email);
+    
+        model.addAttribute("user", currentUser);
+        return "client/profile/show"; // File JSP nằm trong folder client
+    }
 }

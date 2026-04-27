@@ -375,7 +375,7 @@
     return formatter.format(value).replace(/\./g, ",");
   }
 
-  // --- PHẦN QUAN TRỌNG: XỬ LÝ LỌC REALTIME ---
+  //XỬ LÝ LỌC REALTIME
   function handleFilter() {
     let factoryArr = [];
     let targetArr = [];
@@ -478,6 +478,61 @@
         true,
       );
     }
+    $("#avatarInput").change(function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        // Kiểm tra xem file có phải là ảnh không (để tránh lỗi)
+        const fileType = file["type"];
+        const validImageTypes = [
+          "image/gif",
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+        ];
+        if ($.inArray(fileType, validImageTypes) < 0) {
+          alert("Vui lòng chọn định dạng ảnh (jpg, png, webp, gif)");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          // Thay đổi src của thẻ img có id là avatarPreview
+          $("#avatarPreview").attr("src", event.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    //change-password
+    $(document).on("click", ".toggle-password", function () {
+      $(this).toggleClass("bi-eye bi-eye-slash");
+      let input = $(this).closest(".input-group").find("input");
+      if (input.attr("type") == "password") {
+        input.attr("type", "text");
+      } else {
+        input.attr("type", "password");
+      }
+    });
+
+    // 2. Kiểm tra mật khẩu khớp nhau trước khi Submit
+    $("#changePasswordForm").on("submit", function (e) {
+      let newPass = $("#newPassword").val();
+      let confirmPass = $("#confirmPassword").val();
+
+      // Kiểm tra độ dài
+      if (newPass.length < 6) {
+        alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+        e.preventDefault();
+        return;
+      }
+
+      // Kiểm tra trùng khớp
+      if (newPass !== confirmPass) {
+        $("#passwordError").show();
+        e.preventDefault();
+      } else {
+        $("#passwordError").hide();
+      }
+    });
 
     // --- Video Modal ---
     var $videoSrc;
