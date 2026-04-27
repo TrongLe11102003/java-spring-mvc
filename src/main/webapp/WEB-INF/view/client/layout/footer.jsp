@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="row g-5">
-                    <div class="col-lg-3 col-md-6"> 
+                    <div class="col-lg-3 col-md-6">
                         <div class="footer-item">
                             <h4 class="text-light mb-3">Chất lượng là ưu tiên hàng đầu</h4>
 
