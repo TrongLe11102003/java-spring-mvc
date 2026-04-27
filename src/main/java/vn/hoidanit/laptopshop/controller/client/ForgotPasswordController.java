@@ -41,7 +41,8 @@ public class ForgotPasswordController {
         String otp = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
         session.setAttribute("otp", otp);
         session.setAttribute("email_reset", email);
-        session.setMaxInactiveInterval(300); // OTP sống trong 5 phút
+        long expiryTime = System.currentTimeMillis() + (5 * 60 * 1000); 
+        session.setAttribute("otp_expiry", expiryTime);
 
         this.emailService.sendOtpEmail(email, otp);
         return "redirect:/reset-password";
@@ -59,6 +60,13 @@ public class ForgotPasswordController {
                                       HttpSession session, Model model) {
         String sessionOtp = (String) session.getAttribute("otp");
         String email = (String) session.getAttribute("email_reset");
+        Long expiryTime = (Long) session.getAttribute("otp_expiry");
+        long currentTime = System.currentTimeMillis();
+        if (expiryTime == null || currentTime > expiryTime) {
+            model.addAttribute("error", "Mã OTP không chính xác hoặc đã hết hạn!");
+            session.removeAttribute("otp");
+            return "client/auth/reset-password";
+        }
 
         if (sessionOtp == null || !sessionOtp.equals(userOtp)) {
             model.addAttribute("error", "Mã OTP không chính xác hoặc đã hết hạn!");
@@ -75,6 +83,7 @@ public class ForgotPasswordController {
         this.userService.handleSaveUser(user);
 
         session.removeAttribute("otp");
+        session.removeAttribute("otp_expiry");
         session.removeAttribute("email_reset");
 
         return "redirect:/login?resetSuccess";
