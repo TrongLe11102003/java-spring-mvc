@@ -21,59 +21,55 @@ public class ProfileController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    
-
     public ProfileController(UploadService uploadService, UserService userService, PasswordEncoder passwordEncoder) {
         this.uploadService = uploadService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @PostMapping("/profile/update")
-    public String handleUpdateProfile(@ModelAttribute("user") User user, 
-                                 @RequestParam("avatarFile") MultipartFile file,
-                                 HttpServletRequest request) {
+    public String handleUpdateProfile(@ModelAttribute("user") User user,
+            @RequestParam("avatarFile") MultipartFile file,
+            HttpServletRequest request) {
         User currentUser = this.userService.getUserById(user.getId());
         if (currentUser != null) {
             currentUser.setFullName(user.getFullName());
             currentUser.setAddress(user.getAddress());
             currentUser.setPhone(user.getPhone());
-        
+
             if (!file.isEmpty()) {
                 String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
                 currentUser.setAvatar(avatar);
-                request.getSession().setAttribute("avatar", "/images/avatar/" + avatar);            
+                request.getSession().setAttribute("avatar", "/images/avatar/" + avatar);
             }
             this.userService.handleSaveUser(currentUser);
             request.getSession().setAttribute("fullName", currentUser.getFullName());
-            
         }
         return "redirect:/profile";
     }
 
-    @GetMapping("/change-password")
+    @GetMapping("/profile/change-password")
     public String getChangePasswordPage(Model model) {
         return "client/profile/change-password";
     }
 
-    @PostMapping("/change-password")
+    @PostMapping("/profile/change-password")
     public String handleChangePassword(HttpServletRequest request,
-                                   @RequestParam("oldPassword") String oldPassword,
-                                   @RequestParam("newPassword") String newPassword,
-                                   @RequestParam("confirmPassword") String confirmPassword,
-                                   Model model) {
+            @RequestParam("oldPassword") String oldPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Model model) {
         HttpSession session = request.getSession(false);
         String email = (String) session.getAttribute("email");
         User currentUser = this.userService.getUserByEmail(email);
 
         if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
-            model.addAttribute("error", "Mật khẩu cũ không chính xác");
+            model.addAttribute("error", "Mật khẩu hiện tại không chính xác");
             return "client/profile/change-password";
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "Mật khẩu mới và xác nhận không khớp");
+            model.addAttribute("error", "Mật khẩu xác nhận không khớp");
             return "client/profile/change-password";
         }
 

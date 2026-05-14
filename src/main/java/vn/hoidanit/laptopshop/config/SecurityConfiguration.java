@@ -28,6 +28,7 @@ public class SecurityConfiguration {
         this.customOAuth2UserService = customOAuth2UserService;
         this.userService = userService;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -52,7 +53,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationSuccessHandler customSuccessHandler(){
+    public AuthenticationSuccessHandler customSuccessHandler() {
         CustomSuccessHandler handler = new CustomSuccessHandler();
         handler.setUserService(userService);
         return handler;
@@ -60,31 +61,32 @@ public class SecurityConfiguration {
 
     @Bean
     public SpringSessionRememberMeServices rememberMeServices() {
-	    SpringSessionRememberMeServices rememberMeServices =
-		    	new SpringSessionRememberMeServices();
-	// optionally customize
-	    rememberMeServices.setAlwaysRemember(true);
-	    return rememberMeServices;
+        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+        // optionally customize
+        rememberMeServices.setAlwaysRemember(true);
+        return rememberMeServices;
     }
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                    .dispatcherTypeMatchers(DispatcherType.FORWARD,
-                                DispatcherType.INCLUDE) .permitAll()
-                    .requestMatchers("/","/login","/product/**", "/register/**" ,"/client/**", "/css/**", "/js/**", "/images/**","/forgot-password/**", "/reset-password/**").permitAll()
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated())
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD,
+                                DispatcherType.INCLUDE)
+                        .permitAll()
+                        .requestMatchers("/", "/login", "/product/**", "/register/**", "/client/**", "/css/**",
+                                "/js/**", "/images/**", "/forgot-password/**", "/reset-password/**",
+                                "/verify-otp")
+                        .permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .sessionManagement((sessionManagement) -> sessionManagement
-			        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-	                .invalidSessionUrl("/logout?expired")
-				    .maximumSessions(1)
-	                .maxSessionsPreventsLogin(false))
-                    
-	            .logout(logout->logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .invalidSessionUrl("/logout?expired")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false))
 
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
 
                 .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
 
@@ -97,8 +99,7 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .successHandler(customSuccessHandler())
                         .userInfoEndpoint(user -> user
-                            .userService(customOAuth2UserService))
-                );
+                                .userService(customOAuth2UserService)));
 
         return http.build();
     }

@@ -48,7 +48,8 @@
                                         <a href="/profile" class="list-group-item list-group-item-action active">
                                             <i class="bi bi-person me-2"></i> Hồ sơ
                                         </a>
-                                        <a href="/change-password" class="list-group-item list-group-item-action">
+                                        <a href="/profile/change-password"
+                                            class="list-group-item list-group-item-action">
                                             <i class="bi bi-key me-2"></i> Đổi mật khẩu
                                         </a>
                                     </div>
@@ -58,6 +59,23 @@
                             <div class="col-lg-9">
                                 <div class="p-4 border rounded shadow-sm bg-white">
                                     <h4 class="mb-4">Thông tin chi tiết</h4>
+                                    <c:if test="${param.success != null}">
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Cập nhật thông tin cá nhân thành công!
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    </c:if>
+
+                                    <c:if test="${param.changePasswordSuccess != null}">
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Đổi mật khẩu thành công!
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    </c:if>
 
                                     <form action="/profile/update" method="post" enctype="multipart/form-data">
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

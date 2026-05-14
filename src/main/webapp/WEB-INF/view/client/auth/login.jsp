@@ -31,11 +31,20 @@
                           <c:if test="${param.error != null}">
                             <div class="my-2" style="color: red;">Invalid email or password.</div>
                           </c:if>
-                          <!-- <c:if test="${param.logout != null}">
-                        <div class="my-2" style="color: green;">Logout success</div>
-                      </c:if> -->
+                          <c:if test="${param.logout != null}">
+                            <div class="my-2" style="color: green;">Logout success</div>
+                          </c:if>
+                          <c:if test="${param.resetSuccess != null}">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                              Thay đổi mật khẩu thành công. Vui lòng đăng nhập lại.
+                            </div>
+                          </c:if>
 
-
+                          <c:if test="${param.error != null}">
+                            <div class="alert alert-danger">
+                              Email hoặc mật khẩu không chính xác.
+                            </div>
+                          </c:if>
                           <div class="form-floating mb-3">
                             <input class="form-control" name="username" type="email" placeholder="name@example.com" />
                             <label for="inputEmail">Email address</label>
